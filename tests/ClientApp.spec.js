@@ -7,6 +7,7 @@ test('Client ecommerce Playwright test', async ({browser, page})=>
         const passwordField = page.locator('#userPassword');
         const signIn = page.locator('#login'); 
         const products = page.locator('.card-body');
+        const creditcard = "2137 2115 2137 2115";
         
         await page.goto('https://rahulshettyacademy.com/client');
         await userName.fill("gaming@gmail.com");
@@ -31,4 +32,21 @@ test('Client ecommerce Playwright test', async ({browser, page})=>
         await page.locator("div li").first().waitFor();
         const bool = await page.locator("h3:has-text('IPHONE 13 PRO')").isVisible();
         expect(bool).toBeTruthy();
+
+        await page.locator("button[type='button']").last().click();
+        await page.locator("input.input.txt.text-validated").first.fill(creditcard);
+        await page.locator("input[placeholder*='Country']").pressSequentially('pol');
+        const dropdown = await page.locator('.ta-results');
+        await dropdown.waitFor("button");
+        const optionsCount = await dropdown.locator("button").count();
+        for(let i = 0; i < optionsCount; ++i)
+        {
+            const text = await dropdown.locator("button").nth(i).textContent();
+            if(text.trim() === "Poland")
+            {
+                await dropdown.locator("button").nth(i).click();
+                break;
+            }
+        }
+        await page.pause();
     });
